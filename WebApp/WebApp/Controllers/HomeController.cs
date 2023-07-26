@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApp.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Services;
 
 namespace WebApp.Controllers
