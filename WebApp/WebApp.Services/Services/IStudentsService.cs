@@ -1,11 +1,9 @@
-﻿using WebApp.Models;
+﻿using WebApp.Data.ViewModels;
 
-namespace WebApp.Services
+public interface IStudentService
 {
-    public interface IStudentService
-    {
-        Task<IEnumerable<StudentsModel>> GetAllStudents();
-        Task<StudentsModel> GetStudent(int studentId);
-        Task UpdateStudentName(int studentId, string newFirstName, string newLastName);
-    }
+    Task<IEnumerable<StudentsViewModel>> GetAllStudents();
+    Task<StudentsViewModel> GetStudent(int studentId);
+    Task UpdateStudentName(int studentId, string newFirstName, string newLastName);
 }
+

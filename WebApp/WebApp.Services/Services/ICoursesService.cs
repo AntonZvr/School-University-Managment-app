@@ -1,9 +1,10 @@
-﻿using WebApp.Models;
+﻿using WebApp.Data.ViewModels;
+using WebApp.Models;
 
 namespace WebApp.Services
 {
     public interface ICourseService
     {
-        Task<IEnumerable<CoursesModel>> GetAllCourses();
+        Task<IEnumerable<CourseViewModel>> GetAllCourses();
     }
 }
