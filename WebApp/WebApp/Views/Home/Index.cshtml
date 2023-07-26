@@ -24,7 +24,7 @@
 
     <script>
         function loadGroups(courseId) {
-            $.get("@Url.Action("GetGroups")", { courseId: courseId }, function (groups) {
+            $.get("@Url.Action("GetGroups","Groups")", { courseId: courseId }, function (groups) {
                 var buttons = "";
                 groups.forEach(g => {
                     buttons += `<div class="group">
@@ -52,7 +52,7 @@
             var newName = $(this).siblings('.new-group-name').val();
             var saveButton = $(this);
             if (groupId && newName) {
-                $.post("@Url.Action("ChangeGroupName")", { groupId: groupId, newName: newName }, function (updatedGroup) {
+                $.post("@Url.Action("ChangeGroupName", "Groups")", { groupId: groupId, newName: newName }, function (updatedGroup) {
                     saveButton.closest('.group').find('.group-button').text(updatedGroup.Name);
                     saveButton.siblings('.change-group-name').hide();
 
@@ -73,7 +73,7 @@
             var deleteButton = $(this);
             if (groupId) {
                 $.ajax({
-                    url: "@Url.Action("DeleteGroup")",
+                    url: "@Url.Action("DeleteGroup", "Groups")",
                     type: "POST",
                     data: { groupId: groupId },
                     success: function () {
@@ -87,7 +87,7 @@
         });
 
         function loadStudents(groupId) {
-            $.get("@Url.Action("GetStudents")", { groupId: groupId }, function (students) {
+            $.get("@Url.Action("GetStudents", "Students")", { groupId: groupId }, function (students) {
                 var buttons = "";
                 students.forEach(s => {
                     buttons += `<div class="student">
@@ -116,7 +116,7 @@
             var newLastName = $(this).siblings('.new-last-name').val();
             var saveButton = $(this);
             if (studentId && (newFirstName || newLastName)) {
-                $.post("@Url.Action("ChangeStudentName")", { studentId: studentId, newFirstName: newFirstName, newLastName: newLastName }, function (updatedStudent) {
+                $.post("@Url.Action("ChangeStudentName", "Students")", { studentId: studentId, newFirstName: newFirstName, newLastName: newLastName }, function (updatedStudent) {
                     saveButton.closest('.student').find('.student-button').text(`${updatedStudent.firstName} ${updatedStudent.lastName}`);
                     saveButton.siblings('.change-student-name').hide();
 
