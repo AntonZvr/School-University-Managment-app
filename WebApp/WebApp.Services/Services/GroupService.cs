@@ -60,8 +60,18 @@ public class GroupService : IGroupService
 
         if (group != null)
         {
-            _context.Groups.Remove(group);
-            await _context.SaveChangesAsync();
+            var students = await _context.Students.Where(s => s.GROUP_ID == groupId).ToListAsync();
+            if (students.Count == 0)
+            {
+                _context.Groups.Remove(group);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"Group {groupId} includes students and can't be deleted.");
+            }
         }
     }
+
+
 }
