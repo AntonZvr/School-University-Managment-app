@@ -1,17 +1,7 @@
-using WebApp.Controllers;
 using WebApp.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 using WebApp.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using WebApp.Data.ViewModels;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Routing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 
 namespace WebAppTests
 {

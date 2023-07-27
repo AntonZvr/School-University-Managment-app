@@ -1,4 +1,5 @@
-﻿function loadGroups(courseId) {
+﻿
+function loadGroups(courseId) {
     $.get(GetGroupsUrl, { courseId: courseId }, function (groups) {
         var buttons = "";
         groups.forEach(g => {
@@ -12,9 +13,9 @@
                             <button class="delete-button">Delete</button>
                         </div>`;
         });
-        $("#groups").html(buttons);
+        $(groupsSharp).html(buttons);
     }).fail(function () {
-        $("#groups").html("");
+        $(groupsSharp).html("");
     });
 }
 
@@ -55,7 +56,7 @@ $(document).on('click', '.delete-button', function () {
                 deleteButton.closest('.group').remove();
             },
             error: function () {
-                alert("Failed to delete group. >= 1 student in this group");
+                alert(alertFailedDeleteGroup);
             }
         });
     }
@@ -75,9 +76,9 @@ function loadStudents(groupId) {
                             </div>
                         </div>`;
         });
-        $("#students").html(buttons);
+        $(studentsSharp).html(buttons);
     }).fail(function () {
-        $("#students").html("");
+        $(studentsSharp).html("");
     });
 }
 
@@ -95,10 +96,8 @@ $(document).on('click', '.save-student-button', function () {
             saveButton.closest('.student').find('.student-button').text(`${updatedStudent.firstName} ${updatedStudent.lastName}`);
             saveButton.siblings('.change-student-name').hide();
 
-            // Update the student name in the UI immediately
-
         }).fail(function () {
-            alert("Failed to change student name.");
+            alert(alertFailedChangeStudentName);
         });
     } else {
         saveButton.siblings('.change-student-name').hide();
@@ -111,10 +110,10 @@ $(document).on('click', '.course-button', function () {
     var courseId = $(this).data("course-id");
     if (courseId) {
         loadGroups(courseId);
-        $("#students").html(""); // Clear the students
+        $(studentsSharp).html(""); // Clear the students
     } else {
-        $("#groups").html("");
-        $("#students").html("");
+        $(groupsSharp).html("");
+        $(studentsSharp).html("");
     }
 });
 
@@ -123,6 +122,6 @@ $(document).on('click', '.group-button', function () {
     if (groupId) {
         loadStudents(groupId);
     } else {
-        $("#students").html("");
+        $(studentsSharp).html("");
     }
 });

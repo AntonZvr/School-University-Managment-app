@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using WebApp.Data.ViewModels;
 using WebApp.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Threading.Tasks;
 using AutoMapper;
 
 namespace WebApp.Services
