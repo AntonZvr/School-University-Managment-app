@@ -6,4 +6,3 @@ public interface IStudentService
     Task<StudentsViewModel> GetStudent(int studentId);
     Task UpdateStudentName(int studentId, string newFirstName, string newLastName);
 }
-
