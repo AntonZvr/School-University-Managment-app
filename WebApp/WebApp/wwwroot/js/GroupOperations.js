@@ -1,4 +1,12 @@
-﻿function loadGroups(courseId) {
+﻿$(document).on('click', '.course-button', function () {
+    // Remove 'selected' class from any other course buttons
+    $('.course-button').removeClass('selected');
+
+    // Add 'selected' class to clicked course button
+    $(this).addClass('selected');
+});
+
+function loadGroups(courseId) {
     $.get(GetGroupsUrl, { courseId: courseId }, function (groups) {
         var buttons = "";
         groups.forEach(g => {
@@ -71,7 +79,9 @@ $(document).on('click', '.group-button', function () {
 $("#add-group-button").click(function () {
     console.log("Add button clicked");
     var courseId = $(".course-button.selected").data("course-id");
+    console.log(courseId);
     var groupName = $("#new-group-name").val();
+    console.log(groupName);
     if (courseId && groupName) {
         $.post(AddGroupUrl, { courseId: courseId, groupName: groupName }, function (newGroup) {
             console.log("Inside success callback");
@@ -94,6 +104,3 @@ $("#add-group-button").click(function () {
         });
     }
 });
-
-
-

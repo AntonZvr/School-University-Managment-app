@@ -58,7 +58,7 @@ public class GroupService : IGroupService
     public async Task DeleteGroup(int groupId)
     {
         var group = await _context.Groups.FindAsync(groupId);
-
+    
         if (group != null)
         {
             var students = await _context.Students.Where(s => s.GROUP_ID == groupId).ToListAsync();
@@ -76,6 +76,12 @@ public class GroupService : IGroupService
 
     public async Task<GroupViewModel> AddGroup(int courseId, string groupName)
     {
+        var course = await _context.Courses.FindAsync(courseId);
+        if (course == null)
+        {
+            throw new ArgumentException("Course not found.");
+        }
+
         var newGroup = new GroupsModel
         {
             COURSE_ID = courseId,
@@ -89,4 +95,5 @@ public class GroupService : IGroupService
 
         return groupViewModel;
     }
+
 }
