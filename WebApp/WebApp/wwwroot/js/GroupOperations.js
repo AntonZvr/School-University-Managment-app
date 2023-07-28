@@ -73,17 +73,25 @@ $("#add-group-button").click(function () {
     var courseId = $(".course-button.selected").data("course-id");
     var groupName = $("#new-group-name").val();
     if (courseId && groupName) {
-        $.ajax({
-            url: AddGroupUrl,
-            method: 'POST',
-            data: { courseId: courseId, groupName: groupName }
-        }).done(function (newGroup) {
+        $.post(AddGroupUrl, { courseId: courseId, groupName: groupName }, function (newGroup) {
             console.log("Inside success callback");
-            console.log(newGroup);
-        }).fail(function (xhr, status, error) {
-            console.error("Error in AJAX call:", error);
+            console.log("New g:", newGroup);
+            console.log("Inside success callback2");
+            var newGroupHtml = `<div class="group">
+                                    <button class="group-button" data-group-id="${newGroup.Id}">${newGroup.Name}</button>
+                                    <button class="change-button">Change</button>
+                                    <div class="change-group-name" style="display: none;">
+                                        <input type="text" class="new-group-name" />
+                                        <button class="save-button">Save</button>
+                                    </div>
+                                    <button class="delete-button">Delete</button>
+                                </div>`;
+            $("#groups").append(newGroupHtml);
+            $("#new-group-name").val("");
+            console.log("New group added:", newGroup);
+        }).fail(function () {
+            alert("Failed to add group.");
         });
-
     }
 });
 
