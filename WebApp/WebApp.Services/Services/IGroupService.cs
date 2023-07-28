@@ -10,5 +10,6 @@ namespace WebApp.Services
         Task<GroupViewModel> GetGroup(int groupId);
         Task UpdateGroupName(int groupId, string newName);
         Task DeleteGroup(int groupId);
+        Task<GroupViewModel> AddGroup(int courseId, string groupName);
     }
 }

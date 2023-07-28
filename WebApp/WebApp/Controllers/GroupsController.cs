@@ -39,6 +39,13 @@ namespace WebApp.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGroup(int courseId, string groupName)
+        {
+            var newGroup = await _groupService.AddGroup(courseId, groupName);
+            return Json(new { Id = newGroup.GROUP_ID, Name = newGroup.NAME });
+        }
     }
 }
 

@@ -12,10 +12,18 @@
     }
 </div>
 
+<h2>Add Group</h2>
+<div id="add-group">
+    <input type="text" id="new-group-name" placeholder="Group Name" />
+    <button id="add-group-button">Add Group</button>
+</div>
+
 <h2>Groups</h2>
 
 <div id="groups">
+
 </div>
+
 
 <h2>Students</h2>
 
@@ -28,7 +36,11 @@
     var DeleteGroupUrl = '@Url.Action("DeleteGroup", "Groups")';
     var GetStudentsUrl = '@Url.Action("GetStudents", "Students")';
     var ChangeStudentNameUrl = '@Url.Action("ChangeStudentName", "Students")';
+    var AddGroupUrl = '@Url.Action("AddGroup", "Groups")';
+
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="~/js/InteractScript.js"></script>
+<script src="~/js/GroupOperations.js"></script>
+<script src="~/js/StudentsOperations.js"></script>
+<script src="~/js/main.js"></script>

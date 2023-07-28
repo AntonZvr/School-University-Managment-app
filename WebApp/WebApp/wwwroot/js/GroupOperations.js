@@ -30,16 +30,14 @@ $(document).on('click', '.save-button', function () {
         $.post(ChangeGroupNameUrl, { groupId: groupId, newName: newName }, function (updatedGroup) {
             saveButton.closest('.group').find('.group-button').text(updatedGroup.Name);
             saveButton.siblings('.change-group-name').hide();
-
-            // Update the group name in the UI immediately
             saveButton.closest('.group').find('.group-button').text(newName);
+
         }).fail(function () {
             alert("Failed to change group name.");
         });
     } else {
         saveButton.siblings('.change-group-name').hide();
     }
-    // Hide the input field after saving
     $(this).parent().hide();
 });
 
@@ -61,63 +59,6 @@ $(document).on('click', '.delete-button', function () {
     }
 });
 
-function loadStudents(groupId) {
-    $.get(GetStudentsUrl, { groupId: groupId }, function (students) {
-        var buttons = "";
-        students.forEach(s => {
-            buttons += `<div class="student">
-                            <button class="student-button" data-student-id="${s.id}">${s.firstName} ${s.lastName}</button>
-                            <button class="change-student-button">Change</button>
-                            <div class="change-student-name" style="display: none;">
-                                <input type="text" class="new-first-name" placeholder="New first name" />
-                                <input type="text" class="new-last-name" placeholder="New last name" />
-                                <button class="save-student-button">Save</button>
-                            </div>
-                        </div>`;
-        });
-        $("#students").html(buttons);
-    }).fail(function () {
-        $("#students").html("");
-    });
-}
-
-$(document).on('click', '.change-student-button', function () {
-    $(this).siblings('.change-student-name').show();
-});
-
-$(document).on('click', '.save-student-button', function () {
-    var studentId = $(this).parent().siblings('.student-button').data("student-id");
-    var newFirstName = $(this).siblings('.new-first-name').val();
-    var newLastName = $(this).siblings('.new-last-name').val();
-    var saveButton = $(this);
-    if (studentId && (newFirstName || newLastName)) {
-        $.post(ChangeStudentNameUrl, { studentId: studentId, newFirstName: newFirstName, newLastName: newLastName }, function (updatedStudent) {
-            saveButton.closest('.student').find('.student-button').text(`${updatedStudent.firstName} ${updatedStudent.lastName}`);
-            saveButton.siblings('.change-student-name').hide();
-
-            // Update the student name in the UI immediately
-
-        }).fail(function () {
-            alert("Failed to change student name.");
-        });
-    } else {
-        saveButton.siblings('.change-student-name').hide();
-    }
-    // Hide the input field after saving
-    $(this).parent().hide();
-});
-
-$(document).on('click', '.course-button', function () {
-    var courseId = $(this).data("course-id");
-    if (courseId) {
-        loadGroups(courseId);
-        $("#students").html(""); // Clear the students
-    } else {
-        $("#groups").html("");
-        $("#students").html("");
-    }
-});
-
 $(document).on('click', '.group-button', function () {
     var groupId = $(this).data("group-id");
     if (groupId) {
@@ -126,3 +67,25 @@ $(document).on('click', '.group-button', function () {
         $("#students").html("");
     }
 });
+
+$("#add-group-button").click(function () {
+    console.log("Add button clicked");
+    var courseId = $(".course-button.selected").data("course-id");
+    var groupName = $("#new-group-name").val();
+    if (courseId && groupName) {
+        $.ajax({
+            url: AddGroupUrl,
+            method: 'POST',
+            data: { courseId: courseId, groupName: groupName }
+        }).done(function (newGroup) {
+            console.log("Inside success callback");
+            console.log(newGroup);
+        }).fail(function (xhr, status, error) {
+            console.error("Error in AJAX call:", error);
+        });
+
+    }
+});
+
+
+

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApp.Data.ViewModels;
 using WebApp.Models;
@@ -71,5 +72,21 @@ public class GroupService : IGroupService
                 throw new ArgumentException($"Group {groupId} includes students and can't be deleted.");
             }
         }
+    }
+
+    public async Task<GroupViewModel> AddGroup(int courseId, string groupName)
+    {
+        var newGroup = new GroupsModel
+        {
+            COURSE_ID = courseId,
+            NAME = groupName
+        };
+
+        _context.Groups.Add(newGroup);
+        await _context.SaveChangesAsync();
+
+        var groupViewModel = _mapper.Map<GroupViewModel>(newGroup);
+
+        return groupViewModel;
     }
 }
