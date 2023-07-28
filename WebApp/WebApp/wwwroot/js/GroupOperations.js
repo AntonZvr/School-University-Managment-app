@@ -4,7 +4,11 @@
 
     // Add 'selected' class to clicked course button
     $(this).addClass('selected');
+
+    // Show the 'Add Group' section
+    $("#add-group").show();
 });
+
 
 function loadGroups(courseId) {
     $.get(GetGroupsUrl, { courseId: courseId }, function (groups) {
@@ -71,6 +75,7 @@ $(document).on('click', '.group-button', function () {
     var groupId = $(this).data("group-id");
     if (groupId) {
         loadStudents(groupId);
+        console.log(groupId);
     } else {
         $("#students").html("");
     }
@@ -86,7 +91,6 @@ $("#add-group-button").click(function () {
         $.post(AddGroupUrl, { courseId: courseId, groupName: groupName }, function (newGroup) {
             console.log("Inside success callback");
             console.log("New g:", newGroup);
-            console.log("Inside success callback2");
             var newGroupHtml = `<div class="group">
                                     <button class="group-button" data-group-id="${newGroup.Id}">${newGroup.Name}</button>
                                     <button class="change-button">Change</button>
@@ -98,6 +102,7 @@ $("#add-group-button").click(function () {
                                 </div>`;
             $("#groups").append(newGroupHtml);
             $("#new-group-name").val("");
+            loadGroups(courseId);
             console.log("New group added:", newGroup);
         }).fail(function () {
             alert("Failed to add group.");
