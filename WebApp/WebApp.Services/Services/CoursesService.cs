@@ -23,5 +23,47 @@ namespace WebApp.Services
 
             return courseViewModels;
         }
+
+        public async Task<CourseViewModel> AddCourse(string courseName, string description)
+        {           
+            var newCourse = new CoursesModel
+            {
+                DESCRIPTION = description,
+                NAME = courseName
+            };
+
+            _context.Courses.Add(newCourse);
+            await _context.SaveChangesAsync();
+
+            var courseViewModel = _mapper.Map<CourseViewModel>(newCourse);
+
+            return courseViewModel;
+        }
+
+        public async Task<CourseViewModel> ChangeCourseName(int id, string newName)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course != null)
+            {
+                course.NAME = newName;
+                _context.Courses.Update(course);
+                await _context.SaveChangesAsync();
+            }
+
+            return _mapper.Map<CourseViewModel>(course);
+        }
+
+        public async Task<bool> DeleteCourse(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -12,6 +12,12 @@
     }
 </div>
 
+<div id="add-course">
+    <input type="text" id="course-name" placeholder="Course Name" />
+    <input type="text" id="course-desc" placeholder="Course Description" />
+    <button id="add-course-button">Add Course</button>
+</div>
+
 <h2>Groups</h2>
 <div id="groups">
     
@@ -33,6 +39,9 @@
 </div>
 
 <script type="text/javascript">
+    var AddCourseUrl = '@Url.Action("AddCourse", "Course")';
+    var ChangeCourseNameUrl = '@Url.Action("ChangeCourseName", "Course")';
+    var DeleteCourseUrl = '@Url.Action("DeleteCourse", "Course")';
     var GetGroupsUrl = '@Url.Action("GetGroups", "Groups")';
     var ChangeGroupNameUrl = '@Url.Action("ChangeGroupName", "Groups")';
     var DeleteGroupUrl = '@Url.Action("DeleteGroup", "Groups")';
