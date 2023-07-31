@@ -75,8 +75,8 @@ namespace WebApp.Services
 
         public async Task<StudentsViewModel> AddStudent(int groupId, string studentFirstName, string studentLastName)
         {
-            var student = await _context.Students.FindAsync(groupId);
-            if (student == null)
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null)
             {
                 throw new ArgumentException("Group not found.");
             }

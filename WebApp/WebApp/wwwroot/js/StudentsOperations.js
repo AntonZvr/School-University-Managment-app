@@ -3,7 +3,7 @@
         var buttons = "";
         students.forEach(s => {
             buttons += `<div class="student">
-                            <button class="student-button" data-student-id="${s.id}">${s.firstName} ${s.firstName}</button>
+                            <button class="student-button" data-student-id="${s.id}">${s.firstName} ${s.lastName}</button>
                             <button class="change-student-button">Change</button>
                             <button class="delete-student-button">Delete</button>
                             <div class="change-student-name" style="display: none;">
@@ -61,25 +61,26 @@ $("#add-student-button").click(function () {
     console.log("Add button clicked");
     var groupId = $(this).data("group-id");
     console.log(groupId);
-    var studentFirstName = $("#new-first-name").val();
-    var studentLastName = $("#new-last-name").val();
+    var studentFirstName = $("#new-firstName-name").val();
+    var studentLastName = $("#new-lastName-name").val();
     console.log(studentFirstName, studentLastName);
     if (groupId && studentFirstName && studentLastName) {
         $.post(AddStudentUrl, { groupId: groupId, studentFirstName: studentFirstName, studentLastName: studentLastName }, function (newStudent) {
             console.log("Inside success callback");
             console.log("New s:", newStudent);
             var newStudentHtml = `<div class="student">
-                            <button class="student-button" data-student-id="${newStudent.groupId}">${newStudent.studentFirstName} ${newStudent.studentLastName}</button>
+                            <button class="student-button" data-student-id="${newStudent.groupId}">${newStudent.studentLastName} ${newStudent.studentLastName}</button>
                             <button class="change-student-button">Change</button>
                             <button class="delete-student-button">Delete</button>
                             <div class="change-student-name" style="display: none;">
-                                <input type="text" class="new-first-name" placeholder="New first name" />
-                                <input type="text" class="new-last-name" placeholder="New last name" />
+                                <input type="text" class="new-firstName-name" placeholder="New first name" />
+                                <input type="text" class="new-lastName-name" placeholder="New last name" />
                                 <button class="save-student-button">Save</button>
                             </div>
                         </div>`;
-            $("#groups").append(newStudentHtml);
-            $("#new-group-name").val("");
+            $("#students").append(newStudentHtml);
+            $("#new-firstName-name").val("");
+            $("#new-lastName-name").val("");
             loadStudents(groupId);
             console.log("New s added:", newStudent);
         }).fail(function () {

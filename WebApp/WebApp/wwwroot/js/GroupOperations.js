@@ -5,6 +5,8 @@
     // Add 'selected' class to clicked course button
     $(this).addClass('selected');
 
+    $("#add-student").hide();
+
     // Show the 'Add Group' section
     $("#add-group").show();
 });
@@ -74,6 +76,7 @@ $(document).on('click', '.group-button', function () {
     var groupId = $(this).data("group-id");
     if (groupId) {
         loadStudents(groupId);
+        $("#add-student").show();
         console.log(groupId);
     } else {
         $("#students").html("");
