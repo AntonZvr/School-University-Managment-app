@@ -55,6 +55,46 @@ namespace WebApp.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteStudent(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+
+            if (student != null)
+            {
+                var students = await _context.Students.Where(s => s.STUDENT_ID == studentId).ToListAsync();
+
+                _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
+            }
+            else 
+            {
+                throw new ArgumentException("Argument error");
+            }
+        }
+
+        public async Task<StudentsViewModel> AddStudent(int groupId, string studentFirstName, string studentLastName)
+        {
+            var student = await _context.Students.FindAsync(groupId);
+            if (student == null)
+            {
+                throw new ArgumentException("Group not found.");
+            }
+
+            var newStudent = new StudentsModel
+            {
+                GROUP_ID = groupId,
+                FIRST_NAME = studentFirstName,
+                LAST_NAME = studentLastName
+            };
+
+            _context.Students.Add(newStudent);
+            await _context.SaveChangesAsync();
+
+            var studentViewModel = _mapper.Map<StudentsViewModel>(newStudent);
+
+            return studentViewModel;
+        }
     }
 
 }

@@ -24,6 +24,12 @@
 <h2>Students</h2>
 
 <div id="students">
+
+</div>
+<div id="add-student" style="display">
+    <input type="text" id="new-first-name" placeholder="First Name" />
+    <input type="text" id="new-last-name" placeholder="Last Name" />
+    <button id="add-student-button">Add Student</button>
 </div>
 
 <script type="text/javascript">
@@ -33,7 +39,8 @@
     var GetStudentsUrl = '@Url.Action("GetStudents", "Students")';
     var ChangeStudentNameUrl = '@Url.Action("ChangeStudentName", "Students")';
     var AddGroupUrl = '@Url.Action("AddGroup", "Groups")';
-
+    var AddStudentUrl = '@Url.Action("AddStudent", "Students")';
+    var DeleteStudentUrl = '@Url.Action("DeleteStudent", "Students")';
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

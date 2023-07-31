@@ -9,7 +9,6 @@
     $("#add-group").show();
 });
 
-
 function loadGroups(courseId) {
     $.get(GetGroupsUrl, { courseId: courseId }, function (groups) {
         var buttons = "";
