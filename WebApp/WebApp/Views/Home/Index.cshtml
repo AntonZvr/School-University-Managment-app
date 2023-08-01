@@ -8,7 +8,14 @@
 <div id="courses">
     @foreach (var course in Model)
     {
-        <button class="course-button" data-course-id="@course.COURSE_ID">@course.NAME</button>
+        <div>
+            <button class="course-button" data-course-id="@course.COURSE_ID">@course.NAME</button>
+            <button class="change-coursename-button">Change</button>
+        </div>
+        <div class="change-course-name" style="display: none;">
+            <input type="text" class="new-course-name" />
+            <button class="save-coursename-button">Save</button>
+        </div>
     }
 </div>
 
@@ -41,7 +48,7 @@
 <script type="text/javascript">
     var GetCoursesUrl = '@Url.Action("GetCourses", "Course")'
     var AddCourseUrl = '@Url.Action("AddCourse", "Course")';
-    var ChangeCourseNameUrl = '@Url.Action("ChangeCourseName", "Course")';
+    var UpdateCourseNameUrl = '@Url.Action("UpdateCourseName", "Course")';
     var DeleteCourseUrl = '@Url.Action("DeleteCourse", "Course")';
     var GetGroupsUrl = '@Url.Action("GetGroups", "Groups")';
     var ChangeGroupNameUrl = '@Url.Action("ChangeGroupName", "Groups")';

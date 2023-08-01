@@ -33,10 +33,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeCourseName(int id, string newName)
+        public async Task<IActionResult> UpdateCourseName(int courseId, string newName)
         {
-            var updatedCourse = await _courseService.ChangeCourseName(id, newName);
-            return Json(updatedCourse);
+            await _courseService.UpdateCourseName(courseId, newName);
+            var course = await _courseService.GetCourse(courseId);
+            return Json(new { Id = course.COURSE_ID, Name = course.NAME });
         }
 
         [HttpPost]

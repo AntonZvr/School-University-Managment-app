@@ -2,6 +2,7 @@
 using WebApp.Data.ViewModels;
 using WebApp.Models;
 using AutoMapper;
+using System.Text.RegularExpressions;
 
 namespace WebApp.Services
 {
@@ -24,6 +25,20 @@ namespace WebApp.Services
             return courseViewModels;
         }
 
+        public async Task<CourseViewModel> GetCourse(int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            var courseViewModel = _mapper.Map<CourseViewModel>(course);
+
+            return courseViewModel;
+        }
+
         public async Task<CourseViewModel> AddCourse(string courseName, string description)
         {           
             var newCourse = new CoursesModel
@@ -40,19 +55,6 @@ namespace WebApp.Services
             return courseViewModel;
         }
 
-        public async Task<CourseViewModel> ChangeCourseName(int id, string newName)
-        {
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null)
-            {
-                course.NAME = newName;
-                _context.Courses.Update(course);
-                await _context.SaveChangesAsync();
-            }
-
-            return _mapper.Map<CourseViewModel>(course);
-        }
-
         public async Task<bool> DeleteCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -64,6 +66,17 @@ namespace WebApp.Services
             }
 
             return false;
+        }
+
+        public async Task UpdateCourseName(int courseId, string newName)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (course != null)
+            {
+                course.NAME = newName;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

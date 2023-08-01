@@ -35,7 +35,14 @@ function updateCourseList() {
 
 // Function to append a new course button
 function appendCourseButton(course) {
-    var newCourseHtml = `<button class="course-button" data-course-id="${course.id}">${course.name}</button>`;
+    var newCourseHtml = `<div>
+           <button class="course-button" data-course-id="${course.id}">${course.name}</button>
+            <button class="change-coursename-button">Change</button>
+        </div>
+        <div class="change-course-name" style="display: none;">
+            <input type="text" class="new-course-name" />
+            <button class="save-coursename-button">Save</button>
+        </div>`;
     $("#courses").append(newCourseHtml);
 }
 
@@ -53,4 +60,32 @@ $(document).on('click', '.course-button', function () {
         $("#groups").html("");
         $("#students").html("");
     }
+});
+
+$(document).on('click', '.change-coursename-button', function () {
+    console.log("clicked change");
+    $(this).parent().next('.change-course-name').show();
+});
+
+$(document).on('click', '.save-coursename-button', function () {
+    var courseId = $(this).parent().prev().find('.course-button').data("course-id");
+    var newName = $(this).siblings('.new-course-name').val();
+    var saveButton = $(this);
+    console.log(courseId, newName);
+    if (courseId && newName) {
+        console.log("inside if statement")
+        $.post(UpdateCourseNameUrl, { courseId: courseId, newName: newName }, function (updateCourse) {
+            console.log("inside POST");
+            saveButton.closest('.course').find('.course-button').text(updateCourse.Name);
+            saveButton.siblings('.change-course-name').hide();
+            saveButton.closest('.course').find('.course-button').text(newName);
+            updateCourseList();
+        }).fail(function (xhr, status, error) {
+            console.log(xhr.responseText);
+            alert("Failed to change course name. Error: " + error);
+        });
+    } else {
+        saveButton.siblings('.change-course-name').hide();
+    }
+    $(this).parent().hide();
 });
