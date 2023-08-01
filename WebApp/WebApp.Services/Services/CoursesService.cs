@@ -55,19 +55,6 @@ namespace WebApp.Services
             return courseViewModel;
         }
 
-        public async Task<bool> DeleteCourse(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null)
-            {
-                _context.Courses.Remove(course);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task UpdateCourseName(int courseId, string newName)
         {
             var course = await _context.Courses.FindAsync(courseId);
@@ -76,6 +63,25 @@ namespace WebApp.Services
             {
                 course.NAME = newName;
                 await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteCourse(int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (course != null)
+            {
+                var groups = await _context.Groups.Where(g => g.COURSE_ID == courseId).ToListAsync();
+                if (groups.Count == 0)
+                {
+                    _context.Courses.Remove(course);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new ArgumentException($"Course {courseId} includes groups and can't be deleted.");
+                }
             }
         }
     }

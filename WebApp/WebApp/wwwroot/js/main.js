@@ -33,11 +33,11 @@ function updateCourseList() {
     });
 }
 
-// Function to append a new course button
 function appendCourseButton(course) {
     var newCourseHtml = `<div>
            <button class="course-button" data-course-id="${course.id}">${course.name}</button>
             <button class="change-coursename-button">Change</button>
+            <button class="delete-course-button">Delete</button>
         </div>
         <div class="change-course-name" style="display: none;">
             <input type="text" class="new-course-name" />
@@ -88,4 +88,24 @@ $(document).on('click', '.save-coursename-button', function () {
         saveButton.siblings('.change-course-name').hide();
     }
     $(this).parent().hide();
+});
+
+$(document).on('click', '.delete-course-button', function () {
+    var courseId = $(this).siblings('.course-button').data("course-id");
+    var deleteButton = $(this);
+    console.log(courseId);
+    if (courseId) {
+        $.ajax({
+            url: DeleteCourseUrl,
+            type: "POST",
+            data: { courseId: courseId },
+            success: function () {
+                deleteButton.closest('.course').remove();
+                updateCourseList();
+            },
+            error: function () {
+                alert("Failed to delete course. >= 1 groups in this course");
+            }
+        });
+    }
 });

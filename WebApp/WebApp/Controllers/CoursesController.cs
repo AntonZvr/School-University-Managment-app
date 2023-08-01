@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 using WebApp.Data.ViewModels;
 using WebApp.Services;
 
@@ -41,10 +42,17 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteCourse(int id)
+        public async Task<IActionResult> DeleteCourse(int courseId)
         {
-            var result = await _courseService.DeleteCourse(id);
-            return Json(new { success = result });
+            try
+            {
+                await _courseService.DeleteCourse(courseId);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

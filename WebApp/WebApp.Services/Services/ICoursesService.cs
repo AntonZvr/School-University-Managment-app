@@ -7,7 +7,7 @@ namespace WebApp.Services
     {
         Task<IEnumerable<CourseViewModel>> GetAllCourses();
         Task<CourseViewModel> GetCourse(int courseId);
-        Task<bool> DeleteCourse(int id);
+        Task DeleteCourse(int courseId);
         Task<CourseViewModel> AddCourse(string courseName, string description);
         Task UpdateCourseName(int courseId, string newName);
     }
