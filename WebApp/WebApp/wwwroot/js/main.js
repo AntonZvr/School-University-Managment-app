@@ -9,24 +9,36 @@ $("#add-course-button").click(function () {
         $.post(AddCourseUrl, { courseName: courseName, description: desc }, function (newCourse) {
             console.log("Inside success callback");
             console.log("New c:", newCourse);
-            var newGroupHtml = `<div class="group">
-                                    <button class="group-button" data-group-id="${newCourse.Id}">${newCourse.Name}</button>
-                                    <button class="change-button">Change</button>
-                                    <div class="change-group-name" style="display: none;">
-                                        <input type="text" class="new-group-name" />
-                                        <button class="save-button">Save</button>
-                                    </div>
-                                    <button class="delete-button">Delete</button>
-                                </div>`;
-            $("#groups").append(newGroupHtml);
-            $("#new-group-name").val("");
-            loadGroups(courseId);
-            console.log("New group added:", newCourse);
+            appendCourseButton(newCourse);
+            console.log("New course added:", newCourse);
+            $("#course-name").val("");
+            $("#course-desc").val("");
+            updateCourseList();
         }).fail(function () {
-            alert("Failed to add group.");
+            alert("Failed to add course.");
         });
     }
 });
+
+// Function to update the course list
+function updateCourseList() {
+    $.get(GetCoursesUrl, function (courses) {
+        $("#courses").empty();
+        courses.forEach(function (course) {
+            appendCourseButton(course);
+        });
+        console.log(courses);
+    }).fail(function () {
+        alert("Failed to update course list.");
+    });
+}
+
+// Function to append a new course button
+function appendCourseButton(course) {
+    var newCourseHtml = `<button class="course-button" data-course-id="${course.id}">${course.name}</button>`;
+    $("#courses").append(newCourseHtml);
+}
+
 // Select Course
 $(document).on('click', '.course-button', function () {
     // Deselect the previously selected course
@@ -42,8 +54,3 @@ $(document).on('click', '.course-button', function () {
         $("#students").html("");
     }
 });
-
-$(document).on('click', '#add-course-button', function () {
-    console.log('Button clicked!');
-});
-

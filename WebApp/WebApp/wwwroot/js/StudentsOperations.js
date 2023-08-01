@@ -85,6 +85,8 @@ $("#add-student-button").click(function () {
             console.log("New s added:", newStudent);
         }).fail(function () {
             alert("Failed to add student.");
+            $("#new-firstName-name").val("");
+            $("#new-lastName-name").val("");
         });
     }
 });

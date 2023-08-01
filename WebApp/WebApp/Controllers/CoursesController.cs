@@ -19,6 +19,12 @@ namespace WebApp.Controllers
             return View(courses);
         }
 
+        public async Task<IActionResult> GetCourses()
+        {
+            var courses = await _courseService.GetAllCourses();
+            return Json(courses.Select(c => new { Id = c.COURSE_ID, Name = c.NAME }));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCourse(string courseName, string description)
         {
