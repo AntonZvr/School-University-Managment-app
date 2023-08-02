@@ -1,105 +1,73 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+﻿using AutoMapper;
 using WebApp.Data.ViewModels;
-using AutoMapper;
+using WebApp.Models;
+using WebApp.Repositories;
+using WebApp.Services.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace WebApp.Services
+public class StudentService : IStudentService
 {
-    public class StudentService : IStudentService
+    private readonly IStudentRepository _studentRepository;
+    private readonly IMapper _mapper;
+
+    public StudentService(IStudentRepository studentRepository, IMapper mapper)
     {
-        private readonly SchoolContext _context;
-        private readonly IMapper _mapper;
+        _studentRepository = studentRepository;
+        _mapper = mapper;
+    }
 
-        public StudentService(SchoolContext context, IMapper mapper)
+    public async Task<IEnumerable<object>> GetAllStudents(int groupId)
+    {
+        var students = await _studentRepository.GetAllStudents(groupId);
+        var studentViewModels = _mapper.Map<List<StudentsViewModel>>(students);
+
+        return studentViewModels.Select(s => new { Id = s.STUDENT_ID, FirstName = s.FIRST_NAME, LastName = s.LAST_NAME });
+    }
+
+    public async Task<object> GetStudent(int studentId)
+    {
+        var student = await _studentRepository.GetStudent(studentId);
+
+        if (student == null)
         {
-            _context = context;
-            _mapper = mapper;
+            return null;
         }
 
-        public async Task<IEnumerable<object>> GetAllStudents(int groupId)
-        {
-            var students = await _context.Students.Where(s => s.GROUP_ID == groupId).ToListAsync();
-            var studentViewModels = _mapper.Map<List<StudentsViewModel>>(students);
+        var studentViewModel = _mapper.Map<StudentsViewModel>(student);
 
-            return studentViewModels.Select(s => new { Id = s.STUDENT_ID, FirstName = s.FIRST_NAME, LastName = s.LAST_NAME });
+        return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
+    }
+
+    public async Task<object> UpdateStudentName(int studentId, string newFirstName, string newLastName)
+    {
+        var student = await _studentRepository.UpdateStudentName(studentId, newFirstName, newLastName);
+
+        var studentViewModel = _mapper.Map<StudentsViewModel>(student);
+
+        return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
+    }
+
+    public async Task DeleteStudent(int studentId)
+    {
+        var student = await _studentRepository.GetStudent(studentId);
+
+        if (student != null)
+        {
+            await _studentRepository.DeleteStudent(student);
         }
-
-        public async Task<object> GetStudent(int studentId)
+        else
         {
-            var student = await _context.Students.FirstOrDefaultAsync(s => s.STUDENT_ID == studentId);
-
-            if (student == null)
-            {
-                return null;
-            }
-            var studentViewModel = _mapper.Map<StudentsViewModel>(student);
-
-            return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
-        }
-
-        public async Task<object> UpdateStudentName(int studentId, string newFirstName, string newLastName)
-        {
-            var student = await _context.Students.FindAsync(studentId);
-
-            if (student != null)
-            {
-                if (!string.IsNullOrEmpty(newFirstName))
-                {
-                    student.FIRST_NAME = newFirstName;
-                }
-                if (!string.IsNullOrEmpty(newLastName))
-                {
-                    student.LAST_NAME = newLastName;
-                }
-
-                await _context.SaveChangesAsync();
-            }
-
-            var studentViewModel = _mapper.Map<StudentsViewModel>(student);
-
-            return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
-        }
-
-        public async Task DeleteStudent(int studentId)
-        {
-            var student = await _context.Students.FindAsync(studentId);
-
-            if (student != null)
-            {
-                var students = await _context.Students.Where(s => s.STUDENT_ID == studentId).ToListAsync();
-
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new ArgumentException("Argument error");
-            }
-        }
-
-        public async Task<object> AddStudent(int groupId, string studentFirstName, string studentLastName)
-        {
-            var group = await _context.Groups.FindAsync(groupId);
-            if (group == null)
-            {
-                throw new ArgumentException("Group not found.");
-            }
-
-            var newStudent = new StudentsModel
-            {
-                GROUP_ID = groupId,
-                FIRST_NAME = studentFirstName,
-                LAST_NAME = studentLastName
-            };
-
-            _context.Students.Add(newStudent);
-            await _context.SaveChangesAsync();
-
-            var studentViewModel = _mapper.Map<StudentsViewModel>(newStudent);
-
-            return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
+            throw new ArgumentException("Student not found.");
         }
     }
 
+    public async Task<object> AddStudent(int groupId, string studentFirstName, string studentLastName)
+    {
+        var newStudent = await _studentRepository.AddStudent(groupId, studentFirstName, studentLastName);
 
+        var studentViewModel = _mapper.Map<StudentsViewModel>(newStudent);
+
+        return new { Id = studentViewModel.STUDENT_ID, FirstName = studentViewModel.FIRST_NAME, LastName = studentViewModel.LAST_NAME };
+    }
 }

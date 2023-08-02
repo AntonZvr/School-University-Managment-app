@@ -1,27 +1,26 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WebApp.Data.ViewModels;
 using WebApp.Models;
+using WebApp.Repositories;
 using WebApp.Services.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class GroupService : IGroupService
 {
-    private readonly SchoolContext _context;
+    private readonly IGroupRepository _groupRepository;
     private readonly IMapper _mapper;
 
-    public GroupService(SchoolContext context, IMapper mapper)
+    public GroupService(IGroupRepository groupRepository, IMapper mapper)
     {
-        _context = context;
+        _groupRepository = groupRepository;
         _mapper = mapper;
     }
 
     public async Task<IEnumerable<object>> GetAllGroups(int courseId)
     {
-        var groups = await _context.Groups.Where(g => g.COURSE_ID == courseId).ToListAsync();
+        var groups = await _groupRepository.GetAllGroups(courseId);
         var groupViewModels = _mapper.Map<List<GroupViewModel>>(groups);
 
         return groupViewModels.Select(g => new { Id = g.GROUP_ID, Name = g.NAME });
@@ -29,7 +28,7 @@ public class GroupService : IGroupService
 
     public async Task<object> GetGroup(int groupId)
     {
-        var group = await _context.Groups.FirstOrDefaultAsync(g => g.GROUP_ID == groupId);
+        var group = await _groupRepository.GetGroup(groupId);
 
         if (group == null)
         {
@@ -43,13 +42,7 @@ public class GroupService : IGroupService
 
     public async Task<object> UpdateGroupName(int groupId, string newName)
     {
-        var group = await _context.Groups.FindAsync(groupId);
-
-        if (group != null)
-        {
-            group.NAME = newName;
-            await _context.SaveChangesAsync();
-        }
+        var group = await _groupRepository.UpdateGroupName(groupId, newName);
 
         var groupViewModel = _mapper.Map<GroupViewModel>(group);
 
@@ -58,43 +51,27 @@ public class GroupService : IGroupService
 
     public async Task DeleteGroup(int groupId)
     {
-        var group = await _context.Groups.FindAsync(groupId);
+        var group = await _groupRepository.GetGroup(groupId);
 
         if (group != null)
         {
-            var students = await _context.Students.Where(s => s.GROUP_ID == groupId).ToListAsync();
-            if (students.Count == 0)
+            if (await _groupRepository.HasAssociatedStudents(groupId))
             {
-                _context.Groups.Remove(group);
-                await _context.SaveChangesAsync();
+                throw new ArgumentException($"Group {groupId} includes students and can't be deleted.");
             }
             else
             {
-                throw new ArgumentException($"Group {groupId} includes students and can't be deleted.");
+                await _groupRepository.DeleteGroup(group);
             }
         }
     }
 
     public async Task<object> AddGroup(int courseId, string groupName)
     {
-        var course = await _context.Courses.FindAsync(courseId);
-        if (course == null)
-        {
-            throw new ArgumentException("Course not found.");
-        }
-
-        var newGroup = new GroupsModel
-        {
-            COURSE_ID = courseId,
-            NAME = groupName
-        };
-
-        _context.Groups.Add(newGroup);
-        await _context.SaveChangesAsync();
+        var newGroup = await _groupRepository.AddGroup(courseId, groupName);
 
         var groupViewModel = _mapper.Map<GroupViewModel>(newGroup);
 
         return new { Id = groupViewModel.GROUP_ID, Name = groupViewModel.NAME };
     }
 }
-
