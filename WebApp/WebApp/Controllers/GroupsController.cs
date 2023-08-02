@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApp.Services;
+using WebApp.Services.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -15,15 +15,14 @@ namespace WebApp.Controllers
         public async Task<IActionResult> GetGroups(int courseId)
         {
             var groups = await _groupService.GetAllGroups(courseId);
-            return Json(groups.Select(g => new { Id = g.GROUP_ID, Name = g.NAME }));
+            return Json(groups);
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangeGroupName(int groupId, string newName)
         {
-            await _groupService.UpdateGroupName(groupId, newName);
-            var group = await _groupService.GetGroup(groupId);
-            return Json(new { Id = group.GROUP_ID, Name = group.NAME });
+            var group = await _groupService.UpdateGroupName(groupId, newName);
+            return Json(group);
         }
 
         [HttpPost]
@@ -44,8 +43,9 @@ namespace WebApp.Controllers
         public async Task<IActionResult> AddGroup(int courseId, string groupName)
         {
             var newGroup = await _groupService.AddGroup(courseId, groupName);
-            return Json(new { Id = newGroup.GROUP_ID, Name = newGroup.NAME });
+            return Json(newGroup);
         }
     }
+
 }
 

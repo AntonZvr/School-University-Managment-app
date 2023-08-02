@@ -7,7 +7,5 @@ namespace WebApp.Data.ViewModels
         public int COURSE_ID { get; set; }
         public int GROUP_ID { get; set; }
         public string NAME { get; set; }
-
-        public CoursesModel Course { get; set; }
     }
 }

@@ -14,16 +14,14 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> GetStudents(int groupId)
         {
-            var students = await _studentService.GetAllStudents();
-            return Json(students.Where(s => s.GROUP_ID == groupId).Select(s => new { Id = s.STUDENT_ID, FirstName = s.FIRST_NAME, LastName = s.LAST_NAME }));
+            var students = await _studentService.GetAllStudents(groupId);
+            return Json(students);
         }
 
-        [HttpPost]
         public async Task<IActionResult> ChangeStudentName(int studentId, string newFirstName, string newLastName)
         {
-            await _studentService.UpdateStudentName(studentId, newFirstName, newLastName);
-            var student = await _studentService.GetStudent(studentId);
-            return Json(new { Id = student.STUDENT_ID, FirstName = student.FIRST_NAME, LastName = student.LAST_NAME });
+            var student = await _studentService.UpdateStudentName(studentId, newFirstName, newLastName);
+            return Json(student);
         }
 
         [HttpPost]
@@ -41,11 +39,10 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddStudent(int groupId, string studentFirstName,
-        string studentLastName)
+        public async Task<IActionResult> AddStudent(int groupId, string studentFirstName, string studentLastName)
         {
             var newStudent = await _studentService.AddStudent(groupId, studentFirstName, studentLastName);
-            return Json(new { Id = newStudent.GROUP_ID, FirstName = newStudent.FIRST_NAME, LastName = newStudent.LAST_NAME });
+            return Json(newStudent);
         }
     }
 }

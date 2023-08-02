@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using WebApp.Data.ViewModels;
-using WebApp.Services;
+using WebApp.Services.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -17,28 +17,27 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var courses = await _courseService.GetAllCourses();
-            return View(courses);
+            return View(courses.ToList());
         }
 
         public async Task<IActionResult> GetCourses()
         {
-            var courses = await _courseService.GetAllCourses();
-            return Json(courses.Select(c => new { Id = c.COURSE_ID, Name = c.NAME }));
+            var courses = await _courseService.GetSimpleCourses();
+            return Json(courses);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddCourse(string courseName, string description)
         {
             var newCourse = await _courseService.AddCourse(courseName, description);
-            return Json(new { Name = newCourse.NAME, Desc = newCourse.DESCRIPTION });
+            return Json(newCourse);
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateCourseName(int courseId, string newName)
         {
-            await _courseService.UpdateCourseName(courseId, newName);
-            var course = await _courseService.GetCourse(courseId);
-            return Json(new { Id = course.COURSE_ID, Name = course.NAME });
+            var course = await _courseService.UpdateCourseName(courseId, newName);
+            return Json(course);
         }
 
         [HttpPost]

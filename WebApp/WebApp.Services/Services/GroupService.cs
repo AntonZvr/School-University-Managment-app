@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApp.Data.ViewModels;
 using WebApp.Models;
-using WebApp.Services;
+using WebApp.Services.Interfaces;
 
 public class GroupService : IGroupService
 {
@@ -19,20 +19,17 @@ public class GroupService : IGroupService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<GroupViewModel>> GetAllGroups(int courseId)
+    public async Task<IEnumerable<object>> GetAllGroups(int courseId)
     {
-        var groups = await _context.Groups
-           .Where(g => g.COURSE_ID == courseId)
-           .ToListAsync();
-
+        var groups = await _context.Groups.Where(g => g.COURSE_ID == courseId).ToListAsync();
         var groupViewModels = _mapper.Map<List<GroupViewModel>>(groups);
 
-        return groupViewModels;
+        return groupViewModels.Select(g => new { Id = g.GROUP_ID, Name = g.NAME });
     }
 
-    public async Task<GroupViewModel> GetGroup(int groupId)
+    public async Task<object> GetGroup(int groupId)
     {
-        var group = await _context.Groups.FindAsync(groupId);
+        var group = await _context.Groups.FirstOrDefaultAsync(g => g.GROUP_ID == groupId);
 
         if (group == null)
         {
@@ -41,10 +38,10 @@ public class GroupService : IGroupService
 
         var groupViewModel = _mapper.Map<GroupViewModel>(group);
 
-        return groupViewModel;
+        return new { Id = groupViewModel.GROUP_ID, Name = groupViewModel.NAME };
     }
 
-    public async Task UpdateGroupName(int groupId, string newName)
+    public async Task<object> UpdateGroupName(int groupId, string newName)
     {
         var group = await _context.Groups.FindAsync(groupId);
 
@@ -53,12 +50,16 @@ public class GroupService : IGroupService
             group.NAME = newName;
             await _context.SaveChangesAsync();
         }
+
+        var groupViewModel = _mapper.Map<GroupViewModel>(group);
+
+        return new { Id = groupViewModel.GROUP_ID, Name = groupViewModel.NAME };
     }
 
     public async Task DeleteGroup(int groupId)
     {
         var group = await _context.Groups.FindAsync(groupId);
-    
+
         if (group != null)
         {
             var students = await _context.Students.Where(s => s.GROUP_ID == groupId).ToListAsync();
@@ -74,7 +75,7 @@ public class GroupService : IGroupService
         }
     }
 
-    public async Task<GroupViewModel> AddGroup(int courseId, string groupName)
+    public async Task<object> AddGroup(int courseId, string groupName)
     {
         var course = await _context.Courses.FindAsync(courseId);
         if (course == null)
@@ -93,7 +94,7 @@ public class GroupService : IGroupService
 
         var groupViewModel = _mapper.Map<GroupViewModel>(newGroup);
 
-        return groupViewModel;
+        return new { Id = groupViewModel.GROUP_ID, Name = groupViewModel.NAME };
     }
-
 }
+

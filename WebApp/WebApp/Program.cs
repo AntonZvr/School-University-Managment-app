@@ -4,8 +4,8 @@ using System;
 using WebApp.Models;
 using WebApp.Services;
 using WebApp.Models;
-using WebApp.Services;
 using Microsoft.AspNetCore.Hosting;
+using WebApp.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

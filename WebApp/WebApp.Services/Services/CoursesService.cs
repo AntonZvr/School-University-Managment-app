@@ -3,6 +3,7 @@ using WebApp.Data.ViewModels;
 using WebApp.Models;
 using AutoMapper;
 using System.Text.RegularExpressions;
+using WebApp.Services.Interfaces;
 
 namespace WebApp.Services
 {
@@ -21,11 +22,20 @@ namespace WebApp.Services
         {
             var courses = await _context.Courses.ToListAsync();
             var courseViewModels = _mapper.Map<List<CourseViewModel>>(courses);
-
             return courseViewModels;
         }
 
-        public async Task<CourseViewModel> GetCourse(int courseId)
+        public async Task<IEnumerable<object>> GetSimpleCourses()
+        {
+            var courses = await _context.Courses.ToListAsync();
+            var courseViewModels = _mapper.Map<List<CourseViewModel>>(courses);
+
+            var result = courseViewModels.Select(c => new { Id = c.COURSE_ID, Name = c.NAME });
+
+            return result;
+        }
+
+        public async Task<object> GetCourse(int courseId)
         {
             var course = await _context.Courses.FindAsync(courseId);
 
@@ -36,11 +46,11 @@ namespace WebApp.Services
 
             var courseViewModel = _mapper.Map<CourseViewModel>(course);
 
-            return courseViewModel;
+            return new { Id = courseViewModel.COURSE_ID, Name = courseViewModel.NAME };
         }
 
-        public async Task<CourseViewModel> AddCourse(string courseName, string description)
-        {           
+        public async Task<object> AddCourse(string courseName, string description)
+        {
             var newCourse = new CoursesModel
             {
                 DESCRIPTION = description,
@@ -52,10 +62,10 @@ namespace WebApp.Services
 
             var courseViewModel = _mapper.Map<CourseViewModel>(newCourse);
 
-            return courseViewModel;
+            return new { Name = courseViewModel.NAME, Desc = courseViewModel.DESCRIPTION };
         }
 
-        public async Task UpdateCourseName(int courseId, string newName)
+        public async Task<object> UpdateCourseName(int courseId, string newName)
         {
             var course = await _context.Courses.FindAsync(courseId);
 
@@ -64,6 +74,10 @@ namespace WebApp.Services
                 course.NAME = newName;
                 await _context.SaveChangesAsync();
             }
+
+            var courseViewModel = _mapper.Map<CourseViewModel>(course);
+
+            return new { Id = courseViewModel.COURSE_ID, Name = courseViewModel.NAME };
         }
 
         public async Task DeleteCourse(int courseId)
