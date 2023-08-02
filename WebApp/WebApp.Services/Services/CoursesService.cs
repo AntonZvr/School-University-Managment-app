@@ -12,7 +12,7 @@ namespace WebApp.Services
         private readonly SchoolContext _context;
         private readonly IMapper _mapper;
 
-        public CourseService(SchoolContext context, IMapper mapper)
+        public CourseService(IRepository<CoursesModel> courseRepository, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
