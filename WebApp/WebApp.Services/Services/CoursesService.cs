@@ -7,6 +7,11 @@ using WebApp.Repositories;
 
 namespace WebApp.Services
 {
+    public class CourseUpdateResult
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
     public class CourseService : ICourseService
     {
         private readonly ICourseRepository _courseRepository;
@@ -57,7 +62,7 @@ namespace WebApp.Services
             return new { Name = courseViewModel.NAME, Desc = courseViewModel.DESCRIPTION };
         }
 
-        public async Task<object> UpdateCourseName(int courseId, string newName)
+        public async Task<CourseUpdateResult> UpdateCourseName(int courseId, string newName)
         {
             var updatedCourse = await _courseRepository.UpdateCourseName(courseId, newName);
 
@@ -68,7 +73,7 @@ namespace WebApp.Services
 
             var courseViewModel = _mapper.Map<CourseViewModel>(updatedCourse);
 
-            return new { Id = courseViewModel.COURSE_ID, Name = courseViewModel.NAME };
+            return new CourseUpdateResult { Id = courseViewModel.COURSE_ID, Name = courseViewModel.NAME };
         }
 
         public async Task DeleteCourse(int courseId)

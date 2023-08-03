@@ -10,6 +10,6 @@ namespace WebApp.Services.Interfaces
         Task<IEnumerable<object>> GetSimpleCourses();
         Task DeleteCourse(int courseId);
         Task<object> AddCourse(string courseName, string description);
-        Task<object> UpdateCourseName(int courseId, string newName);
+        Task<CourseUpdateResult> UpdateCourseName(int courseId, string newName);
     }
 }

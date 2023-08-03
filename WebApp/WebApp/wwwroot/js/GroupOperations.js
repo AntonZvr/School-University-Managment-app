@@ -64,6 +64,7 @@ $(document).on('click', '.delete-button', function () {
             data: { groupId: groupId },
             success: function () {
                 deleteButton.closest('.group').remove();
+                $("#add-student").hide();
             },
             error: function () {
                 alert("Failed to delete group. >= 1 student in this group");
