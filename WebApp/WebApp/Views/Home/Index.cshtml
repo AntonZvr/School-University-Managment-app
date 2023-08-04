@@ -1,0 +1,67 @@
+﻿@model List<WebApp.Data.ViewModels.CourseViewModel>
+@using WebApp.Data.ViewModels;
+@using WebApp.Models;
+@using WebApp.Properties;
+
+<h1>Courses</h1>
+
+<div id="courses">
+    @foreach (var course in Model)
+    {
+        <div>
+            <button class="course-button" data-course-id="@course.COURSE_ID">@course.NAME</button>
+            <button class="change-coursename-button">Change</button>
+            <button class="delete-course-button">Delete</button>
+        </div>
+        <div class="change-course-name" style="display: none;">
+            <input type="text" class="new-course-name" />
+            <button class="save-coursename-button">Save</button>
+        </div>
+    }
+</div>
+
+<div id="add-course">
+    <input type="text" id="course-name" placeholder="Course Name" />
+    <input type="text" id="course-desc" placeholder="Course Description" />
+    <button id="add-course-button">Add Course</button>
+</div>
+
+<h2>Groups</h2>
+<div id="groups">
+    
+</div>
+<div id="add-group" style="display: none">
+    <input type="text" id="new-group-name" placeholder="Group Name" />
+    <button id="add-group-button">Add Group</button>
+</div>
+
+<h2>Students</h2>
+
+<div id="students">
+
+</div>
+<div id="add-student" style="display: none">
+    <input type="text" id="new-firstName-name" placeholder="First Name" />
+    <input type="text" id="new-lastName-name" placeholder="Last Name" />
+    <button id="add-student-button">Add Student</button>
+</div>
+
+<script type="text/javascript">
+    var GetCoursesUrl = '@Url.Action("GetCourses", "Course")'
+    var AddCourseUrl = '@Url.Action("AddCourse", "Course")';
+    var UpdateCourseNameUrl = '@Url.Action("UpdateCourseName", "Course")';
+    var DeleteCourseUrl = '@Url.Action("DeleteCourse", "Course")';
+    var GetGroupsUrl = '@Url.Action("GetGroups", "Groups")';
+    var ChangeGroupNameUrl = '@Url.Action("ChangeGroupName", "Groups")';
+    var DeleteGroupUrl = '@Url.Action("DeleteGroup", "Groups")';
+    var GetStudentsUrl = '@Url.Action("GetStudents", "Students")';
+    var ChangeStudentNameUrl = '@Url.Action("ChangeStudentName", "Students")';
+    var AddGroupUrl = '@Url.Action("AddGroup", "Groups")';
+    var AddStudentUrl = '@Url.Action("AddStudent", "Students")';
+    var DeleteStudentUrl = '@Url.Action("DeleteStudent", "Students")';
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="~/js/GroupOperations.js"></script>
+<script src="~/js/StudentsOperations.js"></script>
+<script src="~/js/main.js"></script>
